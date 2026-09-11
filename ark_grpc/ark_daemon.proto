@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package measurement_daemon;
+
+service MeasurementService {
+    rpc RegisterDaemon (DaemonInfo) returns (DaemonConfig) {}
+    rpc GetAllVantagePoints (DaemonInfo) returns (VP_ACK) {}
+    rpc SendVantagePoints (VP_RESP) returns (VP_ACK) {}
+    rpc GetMeasurementRequestsBulk (DaemonInfo) returns (MSM_REQ_BULK) {}
+    rpc SendMeasurementResultsBulk (MSM_RES_SHORT_BULK) returns (MSM_ACK_BULK) {}
+}
+
+message DaemonInfo {
+    string daemon_id = 1;
+}
+
+message DaemonConfig {
+    DaemonInfo daemon_info = 1;
+}
+
+message VP_ACK {
+    bool status = 1;
+}
+
+message VP_RESP {
+    DaemonInfo daemon_info = 1;
+    string vantage_points_data = 2;
+}
+
+message MSM_REQ  {
+    string measurement_id = 1;
+    string target = 2;
+    repeated string vps = 3;
+}
+
+message MSM_REQ_BULK {
+    repeated MSM_REQ measurement_requests = 1;
+}
+
+message MSM_RES_SHORT {
+    string measurement_id = 1;
+    string target = 2;
+    string instance = 3;
+    float min_rtt = 4;
+    map<string, int32> load_of_nodes = 5;
+}
+
+message MSM_RES_SHORT_BULK {
+    repeated MSM_RES_SHORT measurement_results = 1;
+}
+
+message MSM_ACK {
+    string measurement_id = 1;
+}
+
+message MSM_ACK_BULK {
+    repeated MSM_ACK measurement_acknowledgements = 1;
+}
+
+
+
